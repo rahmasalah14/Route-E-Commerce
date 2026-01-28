@@ -24,7 +24,7 @@ export default function WishContextProvider({children}:{children :ReactNode})
     async function getWish()
     {
         setIsLoading(true)
-         const res= await fetch('http://localhost:3000/api/get-wish',
+         const res= await fetch('/api/get-wish',
             {
                 headers:{
                     token:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Nzc3MTRjODI0ZDMzNjJjNDUyNWJmNiIsIm5hbWUiOiJyYWhtYSBBYmRvIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3Njk0MzU0NjksImV4cCI6MTc3NzIxMTQ2OX0.zYDADGM6qUAlLYOJOEc1mMBFBUYjFZLVpkw-aeiSrps'

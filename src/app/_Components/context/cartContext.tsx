@@ -28,7 +28,7 @@ export default function CartContextProvider({children}:{children :ReactNode})
     {
         let accessToken=await getAccessToken();
         setIsLoading(true)
-         const res= await fetch('http://localhost:3000/api/get-cart',
+         const res= await fetch('/api/get-cart',
                 {
                     headers:{
                         token:accessToken
