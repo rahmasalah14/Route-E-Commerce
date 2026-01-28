@@ -1,17 +1,19 @@
 import { FailedLoginResponse, SuccessLoginResponse } from "@/interfaces"
-import { sign } from "crypto"
-import NextAuth from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-const handler = NextAuth({
+import NextAuth, { NextAuthOptions } from "next-auth"
+import Credentials from "next-auth/providers/credentials"
+export const authOptions: NextAuthOptions = 
+{
   providers:[
-    CredentialsProvider({
+    Credentials({
     name: 'Credentials',
    
     credentials: {
       email: { label: "Email", type: "text", placeholder: "jsmith@example.com" },
       password: { label: "Password", type: "password" }
     },
-    async authorize(credentials, req) {
+
+
+    async authorize(credentials) {
     
       const res = await fetch("https://ecommerce.routemisr.com/api/v1/auth/signin", {
         method: 'POST',
@@ -37,8 +39,7 @@ const handler = NextAuth({
   ] ,
   callbacks:{
     jwt:({token,user})=>{
-        //token==> next auth
-        //user ==> payload
+  
        if(user)
        {
          token.user = user.user
@@ -58,6 +59,6 @@ const handler = NextAuth({
     },
     secret: process.env.NEXT_AUTH_SECRET  
     
-})
-
+}
+const handler = NextAuth(authOptions)
 export { handler as GET, handler as POST }

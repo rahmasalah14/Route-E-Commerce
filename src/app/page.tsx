@@ -5,20 +5,19 @@ import { useSession } from "next-auth/react"
 import Link from "next/link"
 
 export default function HomePage() {
-  let session = useSession()
+   const { data: session, status } = useSession()
+
+  if (status === "loading") {
+    return null 
+  }
   return (
     <main className="min-h-[80vh] p-6 flex items-center justify-center">
       <section className="text-center px-4 space-y-6">
-
-      {
-        session.status === "authenticated" &&<>
+ {status === "authenticated" && (
           <p className="text-4xl text-muted-foreground">
-          Hi {session.data.user?.name}
-        </p>
-
-        
-        </>
-      }
+            Hi {session?.user?.name}
+          </p>
+        )}
         <h1 className="text-6xl md:text-5xl font-bold tracking-tight">
           Welcome to <span className="font-extrabold">ShopMart</span>
         </h1>

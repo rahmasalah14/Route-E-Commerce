@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { CartResponse } from "@/interfaces"
 import { getAccessToken } from "../getAccessToken";
 
-export async function GET() {
+export async function GET(request:NextRequest) {
     let accessToken=await getAccessToken();
   
   try {
