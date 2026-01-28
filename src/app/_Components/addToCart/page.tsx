@@ -2,59 +2,76 @@
 import React, { useContext, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+  CardFooter
 } from "@/components/ui/card"
 import { HeartIcon, Loader, ShoppingCartIcon } from "lucide-react"
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { CartContext } from '../context/cartContext'
 import { WishContext } from '../context/wishlistContext'
 import { addToCartAction, addToWishAction } from '@/app/(pages)/products/_action/addToCart.action'
-import { get } from 'http'
-import { set } from 'zod'
- function AddToCartBtn({productId}:{productId: string}) {
-  let {getCart}=useContext(CartContext)
- let {getWish}=useContext(WishContext)
-  const [isLoading, setIsLoading] = useState(false)
-  
- async function addProductCart() {
-  setIsLoading(true)
-  
-  const res = await addToCartAction(productId);
 
-if (!res.success) {
-  toast.error(res.message || "Error");
-  return;
-}
-setIsLoading(false)
-toast.success("Added to cart");
-await getCart();
-}
+function AddToCartBtn({ productId }: { productId: string }) {
+  const { getCart } = useContext(CartContext)
+  const { getWish } = useContext(WishContext)
 
+  const [isLoadingCart, setIsLoadingCart] = useState(false)
+  const [isLoadingWish, setIsLoadingWish] = useState(false)
+
+  async function addProductCart() {
+    setIsLoadingCart(true)
+    try {
+      const res = await addToCartAction(productId)
+      if (!res.success) {
+        toast.error(res.message || "Error adding to cart")
+        return
+      }
+      toast.success("Added to cart")
+      await getCart?.()
+    } catch (err) {
+      console.error("Cart error:", err)
+      toast.error("Error adding to cart")
+    } finally {
+      setIsLoadingCart(false)
+    }
+  }
 
   async function addProductWish() {
-    setIsLoading(true)
- const res = await addToWishAction(productId);
-
-if (!res.success) {
-  toast.error(res.message || "Error");
-  return;
-}
-setIsLoading(false)
-toast.success("Added to Wishlist");
-await getWish();
-}
+    setIsLoadingWish(true)
+    try {
+      const res = await addToWishAction(productId)
+      if (!res.success) {
+        toast.error(res.message || "Error adding to wishlist")
+        return
+      }
+      toast.success("Added to Wishlist")
+      await getWish?.()
+    } catch (err) {
+      console.error("Wishlist error:", err)
+      toast.error("Error adding to wishlist")
+    } finally {
+      setIsLoadingWish(false)
+    }
+  }
 
   return (
     <CardFooter className="flex gap-3">
-   <Button  onClick={addProductCart} className="grow cursor-pointer  bg-accent-foreground text-white text-md">Add to Cart { isLoading? <Loader></Loader>: <ShoppingCartIcon></ShoppingCartIcon>}</Button> 
-    <HeartIcon className='cursor-pointer' onClick={addProductWish}></HeartIcon>
-   </CardFooter>
+      <Button
+        onClick={addProductCart}
+        className="grow cursor-pointer bg-accent-foreground text-white text-md"
+        disabled={isLoadingCart}
+      >
+        {isLoadingCart ? <Loader /> : <ShoppingCartIcon />}
+        Add to Cart
+      </Button>
+
+      <Button
+        variant="outline"
+        onClick={addProductWish}
+        disabled={isLoadingWish}
+      >
+        {isLoadingWish ? <Loader /> : <HeartIcon />}
+      </Button>
+    </CardFooter>
   )
 }
 
